@@ -6,6 +6,7 @@ import getpass
 import logging
 import sys
 import shutil
+import os
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -14,6 +15,12 @@ from selenium.webdriver.firefox.options import Options
 from webdriver_manager.firefox import GeckoDriverManager
 from selenium.webdriver.firefox.service import Service
 import config
+
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    logging.warning("python-dotenv not installed. Install with: pip install python-dotenv")
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -292,8 +299,18 @@ def main():
     
     args = parser.parse_args()
     
-    email = input("Enter your LinkedIn email: ")
-    password = getpass.getpass("Enter your LinkedIn password: ")
+    # Try to get credentials from environment variables
+    email = os.getenv('LINKEDIN_EMAIL')
+    password = os.getenv('LINKEDIN_PASSWORD')
+    
+    if email and password:
+        logging.info("Using credentials from .env file")
+    else:
+        logging.info("No .env file found or credentials missing, asking for manual input")
+        if not email:
+            email = input("Enter your LinkedIn email: ")
+        if not password:
+            password = getpass.getpass("Enter your LinkedIn password: ")
     
     extractor = LinkedInExtractor(headless=args.headless, keep_browser_open=args.keep_browser_open)
     extractor.run(email, password, args.output_file)
