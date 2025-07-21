@@ -5,7 +5,7 @@ LOGIN_URL = "https://www.linkedin.com/login"
 CONNECTIONS_URL = "https://www.linkedin.com/mynetwork/invite-connect/connections/"
 
 WAIT_TIMEOUT = 10
-SCROLL_PAUSE_TIME = 2
+SCROLL_PAUSE_TIME = 5
 MAX_SCROLL_ATTEMPTS = 10
 
 def get_output_filename():
